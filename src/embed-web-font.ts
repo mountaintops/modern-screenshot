@@ -1,7 +1,7 @@
 import type { Context } from './context'
 import { hasCssUrl, replaceCssUrlToDataUrl, URL_RE } from './css-url'
 import { contextFetch } from './fetch'
-import { isCssFontFaceRule, isCSSImportRule, resolveUrl, splitFontFamily, isLayerBlockRule } from './utils'
+import { isCssFontFaceRule, isCSSImportRule, isLayerBlockRule, resolveUrl, splitFontFamily } from './utils'
 
 export async function embedWebFont<T extends Element>(
   clone: T,
@@ -187,15 +187,16 @@ function filterPreferredFormat(
 
 function unwrapCssLayers(
   rules: CSSRuleList | readonly CSSRule[],
-  out: CSSRule[] = []
+  out: CSSRule[] = [],
 ): CSSRule[] {
-  
   for (const rule of Array.from(rules)) {
-     if (isLayerBlockRule(rule)) {
+    if (isLayerBlockRule(rule)) {
       out.push(...unwrapCssLayers(rule.cssRules))
-    } else if ('cssRules' in rule) {
+    }
+    else if ('cssRules' in rule) {
       unwrapCssLayers((rule as CSSGroupingRule).cssRules, out)
-    } else {
+    }
+    else {
       out.push(rule)
     }
   }
