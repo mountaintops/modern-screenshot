@@ -1,3 +1,12 @@
+## [4.6.8](https://github.com/qq15725/modern-screenshot/compare/v4.6.7...v4.6.8) (2026-01-26)
+
+
+### Features
+
+* add support for fonts in [@layers](https://github.com/layers) ([e4624bb](https://github.com/qq15725/modern-screenshot/commit/e4624bb855b321ea9b6f81c0f1f139820cfcb7fa))
+
+
+
 ## [4.6.7](https://github.com/qq15725/modern-screenshot/compare/v4.6.6...v4.6.7) (2025-11-18)
 
 
