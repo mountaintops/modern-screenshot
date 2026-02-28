@@ -182,33 +182,33 @@ export async function cloneNode<T extends Node>(
         style.get('overflow-y')?.[0],
       ]
       copyScrollbar = (overflow.includes('scroll'))
-      || (
-        (overflow.includes('auto') || overflow.includes('overlay'))
-        && (node.scrollHeight > node.clientHeight || node.scrollWidth > node.clientWidth)
-      )
+        || (
+          (overflow.includes('auto') || overflow.includes('overlay'))
+          && (node.scrollHeight > node.clientHeight || node.scrollWidth > node.clientWidth)
+        )
     }
 
     const textTransform = style.get('text-transform')?.[0]
     const families = splitFontFamily(style.get('font-family')?.[0])
     const addWordToFontFamilies = families
       ? (word: string) => {
-          if (textTransform === 'uppercase') {
-            word = word.toUpperCase()
-          }
-          else if (textTransform === 'lowercase') {
-            word = word.toLowerCase()
-          }
-          else if (textTransform === 'capitalize') {
-            word = word[0].toUpperCase() + word.substring(1)
-          }
-          families!.forEach((family) => {
-            let fontFamily = fontFamilies.get(family)
-            if (!fontFamily) {
-              fontFamilies.set(family, fontFamily = new Set())
-            }
-            word.split('').forEach(text => fontFamily!.add(text))
-          })
+        if (textTransform === 'uppercase') {
+          word = word.toUpperCase()
         }
+        else if (textTransform === 'lowercase') {
+          word = word.toLowerCase()
+        }
+        else if (textTransform === 'capitalize') {
+          word = word[0].toUpperCase() + word.substring(1)
+        }
+        families!.forEach((family) => {
+          let fontFamily = fontFamilies.get(family)
+          if (!fontFamily) {
+            fontFamilies.set(family, fontFamily = new Set())
+          }
+          word.split('').forEach(text => fontFamily!.add(text))
+        })
+      }
       : undefined
 
     copyPseudoClass(

@@ -7,8 +7,8 @@ export function cloneCanvas<T extends HTMLCanvasElement>(
 ): HTMLCanvasElement | HTMLImageElement {
   if (canvas.ownerDocument) {
     try {
-      const dataURL = canvas.toDataURL()
-      if (dataURL !== 'data:,') {
+      const dataURL = context.canvasData?.get(canvas) ?? canvas.toDataURL()
+      if (dataURL && dataURL !== 'data:,') {
         return createImage(dataURL, canvas.ownerDocument)
       }
     }

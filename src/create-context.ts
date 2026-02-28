@@ -6,6 +6,7 @@ import {
   IN_BROWSER,
   isContext,
   isElementNode,
+  isCanvasElement,
   SUPPORT_WEB_WORKER,
   supportWebp,
   waitUntilLoad,
@@ -112,6 +113,7 @@ export async function createContext<T extends Node>(node: T, options?: Options &
     requests,
     drawImageCount: 0,
     tasks: [],
+    canvasData: new Map(),
 
     features,
     isEnable: (key: string): boolean => {
@@ -124,6 +126,26 @@ export async function createContext<T extends Node>(node: T, options?: Options &
       return (features as any)[key] ?? true
     },
     shadowRoots: [],
+  }
+
+  // Synchronously capture all canvases before any async yields
+  // This helps capture WebGL canvases even without preserveDrawingBuffer: true
+  // provided domToPng is called in the same frame as the WebGL render.
+  if (isElementNode(node)) {
+    const canvases = isCanvasElement(node as any)
+      ? [node]
+      : Array.from((node as Element).querySelectorAll('canvas'))
+    for (const canvas of canvases as HTMLCanvasElement[]) {
+      try {
+        const dataURL = canvas.toDataURL()
+        if (dataURL && dataURL !== 'data:,') {
+          context.canvasData.set(canvas, dataURL)
+        }
+      }
+      catch (e) {
+        // Tainted canvas
+      }
+    }
   }
 
   context.log.time('wait until load')
@@ -158,14 +180,14 @@ function resolveBoundingBox(node: Node, context: Context): { width: number, heig
     const box = node.getBoundingClientRect()
 
     width = width
-    || box.width
-    || Number(node.getAttribute('width'))
-    || 0
+      || box.width
+      || Number(node.getAttribute('width'))
+      || 0
 
     height = height
-    || box.height
-    || Number(node.getAttribute('height'))
-    || 0
+      || box.height
+      || Number(node.getAttribute('height'))
+      || 0
   }
 
   return { width, height }

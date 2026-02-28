@@ -107,6 +107,11 @@ export interface InternalContext<T extends Node> {
   tasks: Promise<void>[]
 
   /**
+   * Synchronous capture of canvas data before async yields
+   */
+  canvasData: Map<HTMLCanvasElement, string>
+
+  /**
    * Automatically destroy context
    */
   autoDestruct: boolean
